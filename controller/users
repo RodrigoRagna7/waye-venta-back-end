@@ -1,0 +1,57 @@
+let { findOne } = require("../DBManger/mongo");
+var CryptoJS = require("crypto-js");
+const Joi = require('@hapi/joi');
+
+
+/**
+ * 
+ */
+const schemalogin = Joi.object({
+    email: Joi.string().min(6).max(255).required().email(),
+    password: Joi.string().min(6).max(1024).required()
+})
+
+/**
+ * 
+ * @param req 
+ * @param res 
+ * @param next 
+ * @returns 
+ */
+async function login(req, res, next) {
+    const firm = "[users:login] "
+    // validate user
+    console.log(firm, "validando request", req.body)
+    const { error } = schemalogin.validate(req.body)
+    if (error) {
+        return res.status(400).json(
+            { error: error.details[0].message }
+        )
+    }
+    let query = {
+        email: req.body.email,
+        password: CryptoJS.SHA1(req.body.password).toString()
+    }
+    console.log(firm + "query ", query);
+    try {
+        let user = await findOne(query, "usuarios", { correo: 1 });
+        console.log("respuesta servicio ", user)
+        if (user.code != 400) {
+            console.log("search 1", user)
+            console.log("search 2", req.body)
+
+            req.body.id = user.data.id;
+            console.log("search", req.body)
+            await next();
+        } else {
+            res.status(400).json(user)
+        }
+    } catch (error) {
+        console.log("error base de datos ", error)
+        res.status(500).json({ code: 10, mensaje: "erro base de datos " })
+    }
+
+
+}
+
+module.exports.login = login;
