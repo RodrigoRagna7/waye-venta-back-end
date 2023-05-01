@@ -23,6 +23,8 @@ let data = Joi.object().keys({
 router.post('/venta', validateToken, async function (req, res, next) {
   const firm = "[index:venta] "
   console.log(firm, "validando request", req.body)
+
+
   const { error } = data.validate(req.body)
   if (error) {
     return res.status(400).json(
@@ -57,7 +59,7 @@ router.post('/venta', validateToken, async function (req, res, next) {
 /**
  * 
  */
-router.get('/aticulo/:articulo', async function (req, res, next) {
+router.get('/aticulo/:articulo', validateToken, async function (req, res, next) {
   const firm = "[index:aticulo] "
   console.log(firm, "request ", req.params)
   try {
@@ -99,16 +101,16 @@ async function verifyToken(token) {
 }
 
 function validateToken(req, res, next) {
-  console.log("valido token")
+  console.log("valido token ", req.headers.authorization)
   if (req.headers.authorization === undefined) {
     res.status(401).send({
-      error: 'Token inválido'
+      code: 401, "mensaje": "No tines permisos"
     })
   } else {
     jwt.verify(req.headers.authorization, Config.token_llave, function (err, user) {
       if (err) {
         res.status(401).send({
-          error: 'Token inválido'
+          code: 403, "mensaje": "no tienes permisos"
         })
       } else {
         next();

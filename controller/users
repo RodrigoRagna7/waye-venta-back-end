@@ -19,15 +19,17 @@ const schemalogin = Joi.object({
  * @returns 
  */
 async function login(req, res, next) {
-    const firm = "[users:login] "
+    const firm = "[controller:users:login] "
     // validate user
-    console.log(firm, "validando request", req.body)
+    console.log(firm, "validando usuraio", req.body)
     const { error } = schemalogin.validate(req.body)
+    console.log("erro ", error)
     if (error) {
         return res.status(400).json(
-            { error: error.details[0].message }
+            { code: 14, mensaje: error.details[0].message }
         )
     }
+
     let query = {
         email: req.body.email,
         password: CryptoJS.SHA1(req.body.password).toString()
@@ -36,19 +38,18 @@ async function login(req, res, next) {
     try {
         let user = await findOne(query, "usuarios", { correo: 1 });
         console.log("respuesta servicio ", user)
-        if (user.code != 400) {
-            console.log("search 1", user)
-            console.log("search 2", req.body)
+        if (user.code === 200) {
 
             req.body.id = user.data.id;
             console.log("search", req.body)
             await next();
         } else {
-            res.status(400).json(user)
+
+            res.status(400).json({ code: 14, mensaje: "crdeneciales invalidas" })
         }
     } catch (error) {
         console.log("error base de datos ", error)
-        res.status(500).json({ code: 10, mensaje: "erro base de datos " })
+        res.status(500).json({ code: 10, mensaje: "error base de datos " })
     }
 
 
