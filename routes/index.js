@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-let { add, findOne, update } = require("../DBManger/mongo");
+let { add, findOne, update, findAll } = require("../DBManger/mongo");
 const Joi = require('@hapi/joi');
 let Config = require('../Config/config').server.jwt;
 let jwt = require('jsonwebtoken');
@@ -68,6 +68,34 @@ router.get('/aticulo/:articulo', validateToken, async function (req, res, next) 
     console.log(firm, "query:", query)
     let respon = await findOne(query, "productos", {});
     console.log(firm, "respuesta ", respon)
+    if (respon.code == 200) {
+      res.send(respon)
+    } else {
+      res.status(respon.code).json(respon)
+    }
+  } catch (error) {
+    console.log(firm, "error ", error)
+    res.status(400).json({ code: 13, mensaje: "id Ivalido" })
+  }
+});
+
+router.get('/aticulo/search/:articulo', async function (req, res, next) {
+  const firm = "[index:aticulo] "
+  console.log(firm, "request ", req.params)
+  try {
+
+    let temp = req.params.articulo.split(" ");
+    let querys = temp.map(t => {
+
+      return { nombre: new RegExp(t, "i") }
+    })
+
+    console.log("querys ", querys)
+    let query = { $or: querys }
+
+    console.log(firm, "query:", query)
+    let respon = await findAll(query, "productos", {});
+
     if (respon.code == 200) {
       res.send(respon)
     } else {
