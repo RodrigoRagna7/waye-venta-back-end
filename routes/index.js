@@ -23,7 +23,11 @@ var options = {
       default: '<span style="color: #444;">{{page}}</span>/<span>{{pages}}</span>', // fallback value
 
     }
+  },
+  childProcessOptions: {
+    env: { OPENSSL_CONF: '/dev/null' }
   }
+
 };
 
 
