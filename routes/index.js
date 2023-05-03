@@ -251,10 +251,7 @@ function validateToken(req, res, next) {
     });
   }
 }
-cron.schedule(" * * * 23 * * ", function () {
-  deltePng();
-  deltePDF();
-});
+
 
 async function deltePDF() {
   const dir = path.join(__dirname, "../public/pdf");
