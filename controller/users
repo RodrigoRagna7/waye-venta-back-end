@@ -29,7 +29,6 @@ async function login(req, res, next) {
             { code: 14, mensaje: error.details[0].message }
         )
     }
-
     let query = {
         email: req.body.email,
         password: CryptoJS.SHA1(req.body.password).toString()
