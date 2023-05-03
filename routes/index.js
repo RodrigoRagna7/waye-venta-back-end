@@ -8,6 +8,8 @@ var path = require('path');
 const fs = require('fs')
 var pdf = require('html-pdf');
 var QRCode = require('qrcode')
+const cron = require("node-cron");
+
 
 var options = {
   format: "A3",
@@ -168,7 +170,7 @@ router.get('/pdf/qr', async (req, res, next) => {
   request.map(t => {
     for (let i = 0; i < t.etiquetas; i++) {
       console.log(`src="${dir}/${t.id}.png"`)
-      let copiar = `<td> <div> <img class="test1" src="${dir}/${t.id}.png" > </div> <div> id: ${t.id} <br>  ${t.nombre} </div> </td>`
+      let copiar = `<td> <div> <img class="test1" src="https://waye-venta-back-end.herokuapp.com/images/qr/${t.id}.png" > </div> <div> id: ${t.id} <br>  ${t.nombre} </div> </td>`
       //console.log(copiar)
       a.push(copiar)
     }
@@ -195,7 +197,7 @@ function generatePDF(lista, resesponse) {
   temHtml += "</tr>"
   let html = `<!DOCTYPE html><html><style>.test1 {height: 130px;width: 130px;}</style><head><mate charest="utf-8" /><title>Hello world!</title></head><body><table style="text-align: center;">${temHtml}</table></body></html>`
 
-  let myPath = path.join(__dirname, "../public/pdf/" + new Date().toLocaleDateString('en-US').replace("/", "-").replace("/", "-") + "/");
+  let myPath = path.join(__dirname, "../public/pdf/");
 
 
   console.log("direcotiro ", myPath)
@@ -249,5 +251,31 @@ function validateToken(req, res, next) {
     });
   }
 }
+cron.schedule(" * * * 23 * * ", function () {
+  deltePng();
+  deltePDF();
+});
+
+async function deltePDF() {
+  const dir = path.join(__dirname, "../public/pdf");
+  const files = await fs.promises.readdir(dir)
+  console.log(files, "")
+  files.map(t => {
+    console.log("borre ", t);
+    fs.unlinkSync(dir + "/" + t)
+  });
+}
+
+async function deltePng() {
+  const dir = path.join(__dirname, "../public/images/qr");
+  const files = await fs.promises.readdir(dir)
+  console.log(files, "")
+  files.map(t => {
+    console.log(t)
+    fs.unlinkSync(dir + "/" + t)
+  });
+}
+
+
 
 module.exports = router;
