@@ -149,7 +149,8 @@ router.get('/pdf/qr', async (req, res, next) => {
   }
   let request = req.body;
 
-
+  console.log("entrar a ver las imagenes:")
+  console.log("entrar a ver las imagenes:", __dirname, "../public/images/qr")
   let dir = path.join(__dirname, "../public/images/qr");
   const files = await fs.promises.readdir(dir);
   console.log("at", files)
