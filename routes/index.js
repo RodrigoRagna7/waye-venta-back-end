@@ -152,7 +152,7 @@ router.get('/pdf/qr', async (req, res, next) => {
 
   let dir = path.join(__dirname, "../public/images/qr");
   const files = await fs.promises.readdir(dir);
-  //console.log("at", files)
+  console.log("at", files)
 
   request.map(t => {
     if (fs.existsSync(dir + "/" + t.id + ".png")) {
