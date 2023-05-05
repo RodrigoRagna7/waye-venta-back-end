@@ -155,15 +155,16 @@ router.get('/pdf/qr', async (req, res, next) => {
   const files = await fs.promises.readdir(dir);
   console.log("at", files)
 
-  // request.map(t => {
-  if (fs.existsSync(dir + "/" + t.id + ".png")) {
-    console.log("existe " + dir + "/" + t.id + ".png")
-  } else {
-    let dataQR = dir + "/" + t.id + ".png";
-    console.log("url qr", dataQR)
-    //QRCode.toFile(dataQR, t.id + "", { errorCorrectionLevel: 'H' })
-  }
-  res.send({ request, dir })
+  request.map(t => {
+    if (fs.existsSync(dir + "/" + t.id + ".png")) {
+      console.log("existe " + dir + "/" + t.id + ".png")
+    } else {
+      let dataQR = dir + "/" + t.id + ".png";
+      console.log("url qr", dataQR)
+      //QRCode.toFile(dataQR, t.id + "", { errorCorrectionLevel: 'H' })
+    }
+    res.send({ request, dir })
+  });
 });
 
 // let a = [];
