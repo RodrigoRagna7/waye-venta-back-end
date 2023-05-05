@@ -8,6 +8,7 @@ var path = require('path');
 const fs = require('fs')
 var pdf = require('html-pdf');
 var QRCode = require('qrcode');
+const cron = require("node-cron");
 
 
 var options = {
@@ -275,16 +276,13 @@ function validateToken(req, res, next) {
   }
 }
 
+//cron.schedule("*/15 * * * * *", function () {
+cron.schedule("* * * 1 * *", function () {// dia 
+  console.log("--------------------- eliminado imagenes");
+  deltePng()
+  console.log("running a task every 15 seconds");
+});
 
-async function deltePDF() {
-  const dir = path.join(__dirname, "../public/pdf");
-  const files = await fs.promises.readdir(dir)
-  console.log(files, "")
-  files.map(t => {
-    console.log("borre ", t);
-    fs.unlinkSync(dir + "/" + t)
-  });
-}
 
 async function deltePng() {
   const dir = path.join(__dirname, "../public/images/qr");
