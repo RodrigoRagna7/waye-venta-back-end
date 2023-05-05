@@ -154,27 +154,27 @@ router.get('/pdf/qr', async (req, res, next) => {
 
   console.log("entrar a ver las imagenes: ")
 
-  res.send("entre")
-  //let dir = path.join(__dirname, "../public/images/qr");
-  // let files;
-  // try {
 
-  //   files = await fs.promises.readdir(dir);
-  // } catch (error) {
-  //   res.status(500).send({ code: 212, "mensaje": "error al enconrar el direcotiro ", dir })
-  // }
-  // console.log("files", files)
+  let dir = path.join(__dirname, "../public/images/qr");
+  let files;
+  try {
 
-  // request.map(t => {
-  //   if (fs.existsSync(dir + "/" + t.id + ".png")) {
-  //     console.log("existe " + dir + "/" + t.id + ".png")
-  //   } else {
-  //     let dataQR = dir + "/" + t.id + ".png";
-  //     console.log("url qr", dataQR)
-  //     //QRCode.toFile(dataQR, t.id + "", { errorCorrectionLevel: 'H' })
-  //   }
-  //   res.send({ request, dir })
-  // });
+    files = await fs.promises.readdir(dir);
+  } catch (error) {
+    res.status(500).send({ code: 212, "mensaje": "error al enconrar el direcotiro ", dir })
+  }
+  console.log("files", files)
+
+  request.map(t => {
+    if (fs.existsSync(dir + "/" + t.id + ".png")) {
+      console.log("existe " + dir + "/" + t.id + ".png")
+    } else {
+      let dataQR = dir + "/" + t.id + ".png";
+      console.log("url qr", dataQR)
+      //QRCode.toFile(dataQR, t.id + "", { errorCorrectionLevel: 'H' })
+    }
+    res.send({ request, dir })
+  });
 });
 
 // let a = [];
