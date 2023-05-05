@@ -154,9 +154,9 @@ router.get('/pdf/qr', async (req, res, next) => {
 
   console.log("entrar a ver las imagenes: ")
 
-  let dir = path.join(__dirname, "../public/images/qr");
+  res.send("entre")
+  //let dir = path.join(__dirname, "../public/images/qr");
   // let files;
-  res.send({ dir })
   // try {
 
   //   files = await fs.promises.readdir(dir);
