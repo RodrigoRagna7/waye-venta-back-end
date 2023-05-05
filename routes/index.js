@@ -140,6 +140,9 @@ router.get('/aticulo/search/:articulo', async function (req, res, next) {
 });
 
 router.get('/pdf/qr', async (req, res, next) => {
+  console.log("entre ")
+
+  console.log("request ", req.body)
 
   const { error } = dataQr.validate(req.body)
   if (error) {
@@ -149,11 +152,11 @@ router.get('/pdf/qr', async (req, res, next) => {
   }
   let request = req.body;
 
-  console.log("entrar a ver las imagenes: ",)
+  console.log("entrar a ver las imagenes: ")
 
-  // let dir = path.join(__dirname, "../public/images/qr");
+  let dir = path.join(__dirname, "../public/images/qr");
   // let files;
-  res.send(dir, files)
+  res.send({ dir })
   // try {
 
   //   files = await fs.promises.readdir(dir);
