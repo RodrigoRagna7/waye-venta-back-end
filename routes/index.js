@@ -153,13 +153,14 @@ router.get('/pdf/qr', async (req, res, next) => {
 
   let dir = path.join(__dirname, "../public/images/qr");
   let files;
-  try {
+  res.send(dir, files)
+  // try {
 
-    files = await fs.promises.readdir(dir);
-  } catch (error) {
-    res.status(500).send({ code: 212, "mensaje": "error al enconrar el direcotiro ", dir })
-  }
-  console.log("files", files)
+  //   files = await fs.promises.readdir(dir);
+  // } catch (error) {
+  //   res.status(500).send({ code: 212, "mensaje": "error al enconrar el direcotiro ", dir })
+  // }
+  // console.log("files", files)
 
   // request.map(t => {
   //   if (fs.existsSync(dir + "/" + t.id + ".png")) {
