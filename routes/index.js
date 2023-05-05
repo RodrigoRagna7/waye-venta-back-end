@@ -7,8 +7,7 @@ let jwt = require('jsonwebtoken');
 var path = require('path');
 const fs = require('fs')
 var pdf = require('html-pdf');
-var QRCode = require('qrcode')
-
+var QRCode = require('qrcode');
 
 
 var options = {
@@ -16,11 +15,11 @@ var options = {
   orientation: "portrait",
 
   header: {
-    height: "8mm",
+    height: "5mm",
 
   },
   footer: {
-    height: "8mm",
+    height: "5mm",
     contents: {
       default: '<span style="color: #444;">{{page}}</span>/<span>{{pages}}</span>', // fallback value
 
@@ -150,21 +149,29 @@ router.get('/pdf/qr', async (req, res, next) => {
       { code: 10, "mensaje": error.details[0].message }
     )
   }
-  let request = req.body;
 
-
-
-
-  // fs.mkdirSync("", (error) => {
-  //   if (error) {
-  //     console.log("error ", error)
-  //   }
-  //   console.log("exito ")
-
-  // })
   let dir = path.join(__dirname, "../public/images/qr");
+  fs.exists(dir, exists => {
+    console.log("existe ??", exists)
+    if (!exists) {
+      console.log("creando el archivo")
+      fs.mkdirSync(dir);
+      console.log("creando creado")
+      foo(dir, req.body, res);
+      //res.send("no ests directorio")
+    } else {
+
+      console.log("ya esta el archivo")
+      foo(dir, req.body, res);
+      //res.send("exite el directorio")
+    }
 
 
+  });
+  //res.send(req.body);
+});
+
+async function foo(dir, request, res) {
   try {
     console.log("el path: ", dir)
     let files = await fs.promises.readdir(dir);
@@ -176,31 +183,25 @@ router.get('/pdf/qr', async (req, res, next) => {
       } else {
         let dataQR = dir + "/" + t.id + ".png";
         console.log("url qr", dataQR)
-        //QRCode.toFile(dataQR, t.id + "", { errorCorrectionLevel: 'H' })
+        QRCode.toFile(dataQR, (t.id + ""), { errorCorrectionLevel: 'H' })
       }
-      res.send({ request, dir })
     });
+    let a = [];
+    request.map(t => {
+      for (let i = 0; i < t.etiquetas; i++) {
+        console.log(`src="${dir}/${t.id}.png"`)
+        let copiar = `<td> <div> <img class="test1" src="https://waye-venta-back-end.herokuapp.com/images/qr/${t.id}.png" > </div> <div> id: ${t.id} <br>  ${t.nombre} </div> </td>`
+        //console.log(copiar)
+        a.push(copiar)
+      }
+    });
+    generatePDF(a, res);
+
   } catch (error) {
     console.log("mi error ", error)
     res.status(500).send({ code: 212, "mensaje": "error al enconrar el direcotiro ", dir })
   }
-});
-
-// let a = [];
-
-
-// request.map(t => {
-//   for (let i = 0; i < t.etiquetas; i++) {
-//     console.log(`src="${dir}/${t.id}.png"`)
-//     let copiar = `<td> <div> <img class="test1" src="https://waye-venta-back-end.herokuapp.com/images/qr/${t.id}.png" > </div> <div> id: ${t.id} <br>  ${t.nombre} </div> </td>`
-//     //console.log(copiar)
-//     a.push(copiar)
-//   }
-// });
-
-// generatePDF(a, res);
-
-
+}
 
 
 function generatePDF(lista, resesponse) {
@@ -219,7 +220,7 @@ function generatePDF(lista, resesponse) {
   temHtml += "</tr>"
   let html = `<!DOCTYPE html><html><style>.test1 {height: 130px;width: 130px;}</style><head><mate charest="utf-8" /><title>Hello world!</title></head><body><table style="text-align: center;">${temHtml}</table></body></html>`
 
-  let myPath = path.join(__dirname, "../public/pdf/");
+  let myPath = path.join(__dirname, "../public/images/qr");
 
 
   console.log("direcotiro ", myPath)
