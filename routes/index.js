@@ -152,8 +152,14 @@ router.get('/pdf/qr', async (req, res, next) => {
   console.log("entrar a ver las imagenes: ",)
 
   let dir = path.join(__dirname, "../public/images/qr");
-  const files = await fs.promises.readdir(dir);
-  console.log("at", files)
+  let files;
+  try {
+
+    files = await fs.promises.readdir(dir);
+  } catch (error) {
+    res.status(500).send({ code: 212, "mensaje": "error al enconrar el direcotiro ", dir })
+  }
+  console.log("files", files)
 
   request.map(t => {
     if (fs.existsSync(dir + "/" + t.id + ".png")) {
