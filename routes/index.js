@@ -166,22 +166,22 @@ router.get('/pdf/qr', async (req, res, next) => {
   res.send({ request, dir })
 });
 
-  // let a = [];
+// let a = [];
 
 
-  // request.map(t => {
-  //   for (let i = 0; i < t.etiquetas; i++) {
-  //     console.log(`src="${dir}/${t.id}.png"`)
-  //     let copiar = `<td> <div> <img class="test1" src="https://waye-venta-back-end.herokuapp.com/images/qr/${t.id}.png" > </div> <div> id: ${t.id} <br>  ${t.nombre} </div> </td>`
-  //     //console.log(copiar)
-  //     a.push(copiar)
-  //   }
-  // });
+// request.map(t => {
+//   for (let i = 0; i < t.etiquetas; i++) {
+//     console.log(`src="${dir}/${t.id}.png"`)
+//     let copiar = `<td> <div> <img class="test1" src="https://waye-venta-back-end.herokuapp.com/images/qr/${t.id}.png" > </div> <div> id: ${t.id} <br>  ${t.nombre} </div> </td>`
+//     //console.log(copiar)
+//     a.push(copiar)
+//   }
+// });
 
-  // generatePDF(a, res);
+// generatePDF(a, res);
 
 
-});
+
 
 function generatePDF(lista, resesponse) {
 
