@@ -8,7 +8,7 @@ var path = require('path');
 const fs = require('fs')
 var pdf = require('html-pdf');
 var QRCode = require('qrcode')
-const cron = require("node-cron");
+
 
 
 var options = {
@@ -149,35 +149,36 @@ router.get('/pdf/qr', async (req, res, next) => {
   }
   let request = req.body;
 
-  console.log("entrar a ver las imagenes:")
-  console.log("entrar a ver las imagenes:", __dirname, "../public/images/qr")
-  let dir = path.join(__dirname, "../public/images/qr");
-  const files = await fs.promises.readdir(dir);
-  console.log("at", files)
+  res.send(request)
+  // console.log("entrar a ver las imagenes: ",)
+  // console.log("entrar a ver las imagenes:", __dirname, "../public/images/qr")
+  // let dir = path.join(__dirname, "../public/images/qr");
+  // const files = await fs.promises.readdir(dir);
+  // console.log("at", files)
 
-  request.map(t => {
-    if (fs.existsSync(dir + "/" + t.id + ".png")) {
-      console.log("existe " + dir + "/" + t.id + ".png")
-    } else {
-      let dataQR = dir + "/" + t.id + ".png";
-      console.log("url qr", dataQR)
-      QRCode.toFile(dataQR, t.id + "", { errorCorrectionLevel: 'H' })
-    }
-  });
+  // request.map(t => {
+  //   if (fs.existsSync(dir + "/" + t.id + ".png")) {
+  //     console.log("existe " + dir + "/" + t.id + ".png")
+  //   } else {
+  //     let dataQR = dir + "/" + t.id + ".png";
+  //     console.log("url qr", dataQR)
+  //     QRCode.toFile(dataQR, t.id + "", { errorCorrectionLevel: 'H' })
+  //   }
+  // });
 
-  let a = [];
+  // let a = [];
 
 
-  request.map(t => {
-    for (let i = 0; i < t.etiquetas; i++) {
-      console.log(`src="${dir}/${t.id}.png"`)
-      let copiar = `<td> <div> <img class="test1" src="https://waye-venta-back-end.herokuapp.com/images/qr/${t.id}.png" > </div> <div> id: ${t.id} <br>  ${t.nombre} </div> </td>`
-      //console.log(copiar)
-      a.push(copiar)
-    }
-  });
+  // request.map(t => {
+  //   for (let i = 0; i < t.etiquetas; i++) {
+  //     console.log(`src="${dir}/${t.id}.png"`)
+  //     let copiar = `<td> <div> <img class="test1" src="https://waye-venta-back-end.herokuapp.com/images/qr/${t.id}.png" > </div> <div> id: ${t.id} <br>  ${t.nombre} </div> </td>`
+  //     //console.log(copiar)
+  //     a.push(copiar)
+  //   }
+  // });
 
-  generatePDF(a, res);
+  // generatePDF(a, res);
 
 
 });
