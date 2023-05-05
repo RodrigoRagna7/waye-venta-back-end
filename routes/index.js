@@ -139,10 +139,11 @@ router.get('/aticulo/search/:articulo', async function (req, res, next) {
   }
 });
 
-router.get('/pdf/qr', async (req, res, next) => {
+router.post('/pdf/qr', async (req, res, next) => {
   console.log("entre ")
 
   console.log("request ", req.body)
+
 
   const { error } = dataQr.validate(req.body)
   if (error) {
@@ -169,7 +170,7 @@ router.get('/pdf/qr', async (req, res, next) => {
 
 
   });
-  //res.send(req.body);
+
 });
 
 async function foo(dir, request, res) {
@@ -205,7 +206,7 @@ async function foo(dir, request, res) {
 }
 
 
-function generatePDF(lista, resesponse) {
+function generatePDF(lista, repuesta) {
 
 
   let temHtml = "<tr>";
@@ -232,7 +233,8 @@ function generatePDF(lista, resesponse) {
   pdf.create(html, options).toFile(myPath + "/" + name + ".pdf", function (err, res) {
     if (err) return console.log(err);
     console.log(res); // { filename: '/app/businesscard.pdf' }
-    resesponse.json({ code: 13, mensaje: name })
+
+    repuesta.json({ code: 13, "pdf": name + ".pdf" })
   });
 
 }
