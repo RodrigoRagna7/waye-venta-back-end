@@ -74,7 +74,7 @@ router.post('/venta', validateToken, async function (req, res, next) {
     request.total = 0
     request.idOrden = `${new Date().toLocaleDateString('en-US')}/${token.idUsuario}/${request.tipoVenta}`
     request.productos.map(tmep => {
-      request.total += tmep.cantidad * tmep.precio;
+      request.total += tmep.precio;
       update({ id: parseInt(tmep.idArticulo, 10) }, { $inc: { cantidad: -1 } }, "productos");
     })
 
