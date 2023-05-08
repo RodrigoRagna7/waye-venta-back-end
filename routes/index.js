@@ -12,15 +12,15 @@ const cron = require("node-cron");
 
 
 var options = {
-  format: "A3",
+  format: "A2",
   orientation: "portrait",
 
   header: {
-    height: "5mm",
+    height: "4mm",
 
   },
   footer: {
-    height: "5mm",
+    height: "4mm",
     contents: {
       default: '<span style="color: #444;">{{page}}</span>/<span>{{pages}}</span>', // fallback value
 
@@ -41,7 +41,7 @@ let data = Joi.object().keys({
     cantidad: Joi.number().integer().required(),
     precio: Joi.number().integer().required(),
   }),
-  tipoVenta: Joi.string().min(6).max(255).required(),
+  tipoVenta: Joi.string().min(3).max(255).required(),
   envio: Joi.number().integer().required(),
 });
 
@@ -71,13 +71,15 @@ router.post('/venta', validateToken, async function (req, res, next) {
     request.fecha = new Date();
     request.vendedor = token.email;
     request.activa = true;
-    request.cantidad = request.cantidad * -1
+    request.total = 0
     request.idOrden = `${new Date().toLocaleDateString('en-US')}/${token.idUsuario}/${request.tipoVenta}`
     request.productos.map(tmep => {
-
+      request.total += tmep.cantidad * tmep.precio;
       update({ id: parseInt(tmep.idArticulo, 10) }, { $inc: { cantidad: -1 } }, "productos");
     })
 
+    request.total += request.envio;
+    console.log(firm, "save data ", request)
     let addVenta = await add(request, "ventas");
     res.send(addVenta);
 
@@ -281,7 +283,7 @@ function validateToken(req, res, next) {
 //cron.schedule("*/15 * * * * *", function () {
 cron.schedule("* * * 1 * *", function () {// dia 
   console.log("--------------------- eliminado imagenes");
-  deltePng()
+  //deltePng()
   console.log("running a task every 15 seconds");
 });
 
