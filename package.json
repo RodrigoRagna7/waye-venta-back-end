@@ -12,6 +12,7 @@
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
     "debug": "~2.6.9",
+    "dotenv": "^16.0.3",
     "express": "^4.16.4",
     "html-pdf": "^3.0.1",
     "http-errors": "~1.6.3",

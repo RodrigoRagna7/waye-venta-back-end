@@ -1,9 +1,12 @@
+const dotenv = require('dotenv');
+dotenv.config();
 let server = {
     base_datos: {
-        url: "mongodb+srv://rodrigorivera12357:myPassword@inventario.of2f7xw.mongodb.net/?retryWrites=true&w=majority"
+        url: process.env.URL_BASE,
+        dataBase: ""
     },
     jwt: {
-        token_llave: "perritoMedia",
+        token_llave: process.env.TOKEN_LLAVE,
         expira_token: 86400,
     }
 }

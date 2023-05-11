@@ -1,0 +1,15 @@
+--total productos ventas
+db.productos.aggregate([
+    {
+        $group: { _id: null, mi_suma: { $sum: { $multiply: ["$cantidad", "$precioP"] } } }
+    }
+
+])
+
+--total productos
+db.productos.aggregate([
+    {
+        $group: { _id: null, mi_suma: { $sum: "$cantidad" } }
+    }
+
+])
