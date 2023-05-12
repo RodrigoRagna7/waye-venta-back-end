@@ -38,6 +38,7 @@ let data = Joi.object().keys({
 
   productos: Joi.array().items({
     idArticulo: Joi.number().integer().required(),
+    nombre: Joi.string().min(3).max(555).required(),
     cantidad: Joi.number().integer().required(),
     precio: Joi.number().integer().required(),
   }),
