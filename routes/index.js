@@ -12,24 +12,20 @@ const cron = require("node-cron");
 
 
 var options = {
-  format: "A2",
+  format: "A3",
   orientation: "portrait",
 
   header: {
-    height: "4mm",
+    height: "1mm",
 
   },
   footer: {
-    height: "4mm",
+    height: "1mm",
     contents: {
       default: '<span style="color: #444;">{{page}}</span>/<span>{{pages}}</span>', // fallback value
 
     }
-  },
-  childProcessOptions: {
-    env: { OPENSSL_CONF: '/dev/null' }
   }
-
 };
 
 
@@ -90,6 +86,28 @@ router.post('/venta', validateToken, async function (req, res, next) {
 
   }
 });
+
+router.post('/items/add', validateToken, async function (req, res, next) {
+
+  let data = req.body;
+  console.log("🚀 ~ file: index.js:93 ~ data:", data)
+
+  let response = [];
+
+  await Promise.all(data.map(async t => {
+    let a = await update({ id: parseInt(t.id, 10) }, { $inc: { cantidad: t.etiquetas } }, "productos");
+
+    let tem = {
+
+      id: t.id,
+      exito: a.modifiedCount
+    }
+    response.push(tem)
+
+  }))
+
+  res.send(response)
+})
 
 /**
  * 
@@ -270,6 +288,7 @@ function validateToken(req, res, next) {
     })
   } else {
     jwt.verify(req.headers.authorization, Config.token_llave, function (err, user) {
+      //console.log("error ", err)
       if (err) {
         res.status(401).send({
           code: 403, "mensaje": "no tienes permisos"

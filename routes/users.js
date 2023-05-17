@@ -11,7 +11,7 @@ let { login } = require("../controller/users")
 router.post('/login', login, function (req, res, next) {
     try {
         const firm = "[router:login] 5";
-        console.log(firm, req.body)
+
         let tokenData = {
             email: req.body.email,
             idUsuario: req.body.id
@@ -22,6 +22,7 @@ router.post('/login', login, function (req, res, next) {
                 expiresIn: Config.expira_token // expires in 24 hours
 
             });
+        console.log("🚀 ~ file: users.js:21 ~ token:", token)
         res.send({ code: 200, "token": token })
     } catch (error) {
         res.status(500).send({ code: 14, "mensaje": "error servidor " })
