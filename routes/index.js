@@ -147,7 +147,7 @@ router.get('/aticulo/search/:articulo', async function (req, res, next) {
     let query = { $or: querys }
 
     console.log(firm, "query:", query)
-    let respon = await findAll(query, "productos", {});
+    let respon = await findAll(query, "productos", {}, { id: 1 });
 
     if (respon.code == 200) {
       res.send(respon)
@@ -192,6 +192,28 @@ router.post('/pdf/qr', async (req, res, next) => {
 
   });
 
+});
+
+router.get('/faltantes', validateToken, async function (req, res, next) {
+
+  try {
+
+    console.log("---", req.body.query)
+    console.log("..." + JSON.parse(req.body.query))
+    console.log("---", req.body.query)
+    let query = JSON.parse(req.body.query)
+    let proyection = { projection: { id: 1, nombre: 1, cantidad: 1 } }
+    let ordenar = { id: 1 }
+
+    console.log("query:", query)
+    let respon = await findAll(query, "productos", proyection, ordenar);
+    //let respon = "hola"
+    res.send(respon)
+
+  } catch (error) {
+    console.log("error ", error)
+    res.status(500).json({ code: 13, mensaje: "Error servidor" })
+  }
 });
 
 async function foo(dir, request, res) {

@@ -42,15 +42,15 @@ async function findOne(query, coleccion, poyeccion) {
     }
 }
 
-async function findAll(query, coleccion, poyeccion) {
+async function findAll(query, coleccion, poyeccion, ordenar) {
 
     const firm = "[Mongo:findAll] ";
-    console.log("querya ", query)
+    console.log("query ", query, "  proyection", poyeccion)
     try {
 
         const collection = client.db(process.env.DATA_BASE).collection(coleccion);
-        const data = await collection.find(query, { _id: 1, marca: 1 }).toArray();;
-        console.log(data)
+        const data = await collection.find(query, poyeccion).sort(ordenar).toArray();;
+        console.log(data.length)
         return data == null ? {
             code: 404, "mensaje": "no hay datos"
         } : { code: 200, data };
@@ -88,6 +88,7 @@ async function update(query, update, coleccion) {
         return { code: 500, mensaje: "Error Base de datos" };
     }
 }
+
 
 
 module.exports.update = update;
