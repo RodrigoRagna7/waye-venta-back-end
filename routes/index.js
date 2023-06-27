@@ -68,7 +68,8 @@ router.post('/venta', validateToken, async function (req, res, next) {
     request.fecha = new Date();
     request.vendedor = token.email;
     request.activa = true;
-    request.total = 0
+    request.total = 0;
+    request.pagada = false;
     request.idOrden = `${new Date().toLocaleDateString('en-US')}/${token.idUsuario}/${request.tipoVenta}`
     request.productos.map(tmep => {
       request.total += tmep.precio;
@@ -282,6 +283,54 @@ function generatePDF(lista, repuesta) {
 
 }
 
+router.get('/pagos', validateToken, async function (req, res, next) {
+  console.log("🚀 ~ file: index.js:293 ~ pagos:")
+
+  const token = await verifyToken(req.headers.authorization).catch(err => { }) || {};
+  console.log("🚀 ~ file: index.js:290 ~ token:", token)
+
+  let query = {
+    pagada: false,
+    vendedor: token.email
+  }
+  let proyection =
+  {
+    projection: {
+      tipoVenta: 1,
+      productos: 1,
+      pagada: 1,
+      total: 1
+    }
+  }
+
+  let respon = await findAll(query, "ventas", proyection, { id: 1 });
+  console.log("🚀 ~ file: index.js:308 ~ respon:", respon)
+  let suma = 0;
+  respon.data.forEach(element => {
+    if (element.tipoVenta == 'metro') {
+      suma += 100
+    }
+    if (element.tipoVenta == 'mercadoLibre') {
+      suma += 20
+    }
+    if (element.tipoVenta == 'personal') {
+      suma += 30
+    }
+  });
+
+  respon.pago = suma;
+
+  res.send(respon);
+
+});
+
+async function getUser(token) {
+  jwt.verify(req.headers.authorization, Config.token_llave, function (err, user) {
+    //console.log("error ", err)    
+    return user.email;
+  });
+}
+
 /**
  * 
  */
@@ -311,11 +360,13 @@ function validateToken(req, res, next) {
   } else {
     jwt.verify(req.headers.authorization, Config.token_llave, function (err, user) {
       //console.log("error ", err)
+      console.log("🚀 ~ file: index.js:333 ~ user:", user)
       if (err) {
         res.status(401).send({
           code: 403, "mensaje": "no tienes permisos"
         })
       } else {
+
         next();
       }
     });
