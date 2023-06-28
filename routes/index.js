@@ -289,10 +289,35 @@ router.get('/pagos', validateToken, async function (req, res, next) {
   const token = await verifyToken(req.headers.authorization).catch(err => { }) || {};
   console.log("🚀 ~ file: index.js:290 ~ token:", token)
 
-  let query = {
-    pagada: false,
-    vendedor: token.email
+  if (token.tipo == 1) {
+
+    let query = {
+      pagada: false,
+      vendedor: "santiago@gmail.com"
+    }
+    let respon = await getPago(query);
+    respon.vendedor = "santiago@gmail.com"
+    query.vendedor = "valeria@gmail.com"
+    let respon1 = await getPago(query);
+    respon1.vendedor = "valeria@gmail.com"
+    res.send([respon, respon1])
+  } else {
+
+    let query = {
+      pagada: false,
+      vendedor: token.email
+    }
+
+    let respon = await getPago(query)
+
+
+    res.send(respon);
   }
+
+
+});
+
+async function getPago(query) {
   let proyection =
   {
     projection: {
@@ -303,10 +328,9 @@ router.get('/pagos', validateToken, async function (req, res, next) {
     }
   }
 
-  let respon = await findAll(query, "ventas", proyection, { id: 1 });
-  console.log("🚀 ~ file: index.js:308 ~ respon:", respon)
+  let response = await findAll(query, "ventas", proyection, { id: 1 });
   let suma = 0;
-  respon.data.forEach(element => {
+  response.data.forEach(element => {
     if (element.tipoVenta == 'metro') {
       suma += 100
     }
@@ -318,11 +342,10 @@ router.get('/pagos', validateToken, async function (req, res, next) {
     }
   });
 
-  respon.pago = suma;
-
-  res.send(respon);
-
-});
+  response.pago = suma;
+  console.log("🚀 ~ file: index.js:341 ~ getPago ~ response.pago:", response.pago)
+  return response
+}
 
 async function getUser(token) {
   jwt.verify(req.headers.authorization, Config.token_llave, function (err, user) {

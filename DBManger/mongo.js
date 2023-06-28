@@ -54,7 +54,6 @@ async function findAll(query, coleccion, poyeccion, ordenar) {
         return data == null ? {
             code: 404, "mensaje": "no hay datos"
         } : { code: 200, data };
-
     } catch (error) {
         console.log(firm, "error , ", error)
         return { code: 500, mensaje: "Error Base de datos" };
