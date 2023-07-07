@@ -133,6 +133,18 @@ router.get('/aticulo/:articulo', validateToken, async function (req, res, next) 
   }
 });
 
+router.get('/list', validateToken, async function (req, res) {
+  const firm = "[index:list] ";
+
+  let proyection = { projection: { nombre: 1, id: 1 } }
+
+  let respon = await findAll({}, "productos", proyection, { id: 1 });
+  //let respon = "hola"
+  res.send(respon);
+
+
+});
+
 router.get('/aticulo/search/:articulo', async function (req, res, next) {
   const firm = "[index:aticulo] "
   console.log(firm, "request ", req.params)
@@ -324,11 +336,13 @@ async function getPago(query) {
       tipoVenta: 1,
       productos: 1,
       pagada: 1,
-      total: 1
+      total: 1,
+      fecha: 1
     }
   }
 
   let response = await findAll(query, "ventas", proyection, { id: 1 });
+  let index = 1;
   let suma = 0;
   response.data.forEach(element => {
     if (element.tipoVenta == 'metro') {
@@ -340,6 +354,7 @@ async function getPago(query) {
     if (element.tipoVenta == 'personal') {
       suma += 30
     }
+    element.index = index++;
   });
 
   response.pago = suma;
