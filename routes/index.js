@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-let { add, findOne, update, findAll } = require("../DBManger/mongo");
+let { add, findOne, update, findAll, findMax } = require("../DBManger/mongo");
 const Joi = require('@hapi/joi');
 let Config = require('../Config/config').server.jwt;
 let jwt = require('jsonwebtoken');
@@ -88,7 +88,7 @@ router.post('/venta', validateToken, async function (req, res, next) {
   }
 });
 
-router.post('/items/add', validateToken, async function (req, res, next) {
+router.post('/items', async function (req, res, next) {
 
   let data = req.body;
   console.log("🚀 ~ file: index.js:93 ~ data:", data)
@@ -109,6 +109,45 @@ router.post('/items/add', validateToken, async function (req, res, next) {
 
   res.send(response)
 })
+
+
+router.post('/items/new', validateToken, async function (req, res, next) {
+
+  let proyection = { projection: { nombre: 1, id: 1 } }
+  let max = (await findAll({}, "productos", proyection, { id: -1 })).data[0].id;
+  console.log("🚀 ~ file: index.js:118 ~ max:", max)
+
+  let data = req.body;
+  console.log("🚀 ~ file: index.js:120 ~ data:", data)
+
+
+  let response = [];
+
+  await Promise.all(data.map(async t => {
+    let tempData = {
+      "id": ++max,
+      "nombre": t.nombre,
+      "cantidad": t.piezas,
+      "precioP": t.precioP,
+      "precioM": t.precioM
+    }
+    let a = await add(tempData, "productos");
+
+    // let tem = {
+
+    //   id: ma,
+    //   exito: a.modifiedCount
+    // }
+    response.push(tempData)
+
+  }))
+
+  res.send(response)
+
+
+
+});
+
 
 /**
  * 
@@ -330,6 +369,7 @@ router.get('/pagos', validateToken, async function (req, res, next) {
 });
 
 async function getPago(query) {
+  console.log("🚀 ~ file: index.js:372 ~ getPago ~ query:", query)
   let proyection =
   {
     projection: {
